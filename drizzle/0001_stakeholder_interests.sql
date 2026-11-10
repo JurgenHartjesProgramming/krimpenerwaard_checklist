@@ -1,0 +1,1 @@
+ALTER TABLE "stakeholders" ADD COLUMN "interests" text DEFAULT '' NOT NULL;

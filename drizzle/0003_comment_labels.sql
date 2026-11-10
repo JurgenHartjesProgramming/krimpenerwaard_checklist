@@ -1,0 +1,1 @@
+ALTER TABLE "comments" ADD COLUMN "labels" text[] DEFAULT '{}'::text[] NOT NULL;
