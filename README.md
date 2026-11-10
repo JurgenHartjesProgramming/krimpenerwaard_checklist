@@ -7,6 +7,8 @@ The full functional specification is in [docs/SPEC.md](docs/SPEC.md).
 
 **Getting it running (database, template, Microsoft sign-in, production): see [docs/INSTALLATION.md](docs/INSTALLATION.md).**
 
+**For end users (in Dutch): [docs/GEBRUIKERSHANDLEIDING.md](docs/GEBRUIKERSHANDLEIDING.md).**
+
 ## Stack
 
 Next.js 15 (App Router) · TypeScript · Auth.js v5 (Microsoft Entra ID) · Drizzle ORM · PostgreSQL · Tailwind CSS v4
