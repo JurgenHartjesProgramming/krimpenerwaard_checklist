@@ -45,12 +45,6 @@ users from an allowed tenant land on a "waiting for approval" screen until an ad
 | `npm run db:up` | Start local Postgres (docker compose) |
 | `npm run db:generate` | Generate a migration after changing `src/db/schema.ts` |
 | `npm run db:migrate` | Apply migrations |
-| `npx tsx scripts/excel-to-sql.ts "<file.xlsx>" imports/<name>.sql` | Convert the "Stakeholders per fase" Excel into SQL for a new project with phases, activities and stakeholders |
-| `npx tsx scripts/conflicts-to-sql.ts "<file.xlsx>" imports/<name>.sql` | Convert the "Belangenverstrengeling per fase" Excel into SQL that appends conflicts to the stakeholders' interests (reads names from the database, read-only) |
-| `npx tsx scripts/docx-links-to-sql.ts "<file.docx>" imports/<name>.sql` | Convert the source links per stakeholder in the stakeholder Word document into SQL that adds them as documentation (reads names from the database, read-only; skips URLs a stakeholder already has) |
-| `npx tsx scripts/template-to-activities.ts "<V01.xlsx>" imports/<name>.sql "<project>"` | Convert a project imported before activities existed to the activity model (one-off; refuses if the project already has activities) |
-| `npx tsx scripts/activity-conflicts-to-sql.ts "<file.xlsx>" imports/<name>.sql "<project>"` | Add the conflicts from "Belangenverstrengeling per fase" to the matching activities (skips conflicts an activity already has) |
-| `npx tsx scripts/docx-profiles-to-sql.ts "<file.docx>" imports/<name>.sql "<project>"` | Fill "Over deze stakeholder" from the stakeholder Word document (text per section, without sources; only empty profiles) |
 | `npx tsx scripts/smoke-history.ts` | Smoke test of the version-history layer (development DB only) |
 
 ## Template project (one script)
@@ -66,8 +60,7 @@ npx tsx scripts/build-template-sql.ts "<V01 - Stakeholders per fase.xlsx>" "<Bel
 
 Run the result on a migrated database (pgAdmin Query Tool, or
 `docker compose exec -T db psql -U checklist -d checklist -v ON_ERROR_STOP=1 -f - < imports/sjabloon-volledig.sql`).
-It stops without changes if a project with that name already exists. The other import scripts in the table above
-update existing projects step by step; for a fresh template only this one is needed.
+It stops without changes if a project with that name already exists.
 
 ## Architecture notes
 
