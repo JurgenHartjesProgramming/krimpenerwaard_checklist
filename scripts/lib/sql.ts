@@ -20,7 +20,8 @@ export const snapshot = {
     'startDate', ${a}.start_date, 'endDate', ${a}.end_date, 'leaderName', ${a}.leader_name, 'leaderEmail', ${a}.leader_email,
     ${meta(a)})`,
   phase: (a: string) => `jsonb_build_object(
-    'id', ${a}.id, 'projectId', ${a}.project_id, 'name', ${a}.name, 'description', ${a}.description, 'sortOrder', ${a}.sort_order,
+    'id', ${a}.id, 'projectId', ${a}.project_id, 'name', ${a}.name, 'description', ${a}.description,
+    'startDate', ${a}.start_date, 'endDate', ${a}.end_date, 'sortOrder', ${a}.sort_order,
     ${meta(a)})`,
   activity: (a: string) => `jsonb_build_object(
     'id', ${a}.id, 'projectId', ${a}.project_id, 'phaseId', ${a}.phase_id, 'number', ${a}.number, 'name', ${a}.name,

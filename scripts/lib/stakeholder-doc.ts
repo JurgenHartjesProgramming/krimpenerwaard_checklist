@@ -114,7 +114,8 @@ export async function readStakeholderDoc(path: string): Promise<StakeholderSecti
       inSources = true;
       continue;
     }
-    const bold = /<w:b\/>|<w:b w:val="(1|true)"\/>/.test(b) && !/<w:b w:val="(0|false)"\/>/.test(b);
+    // Word writes both <w:b/> and <w:b w:val="1" /> (with or without a space before "/>").
+    const bold = /<w:b\s*\/>|<w:b w:val="(1|true)"\s*\/>/.test(b) && !/<w:b w:val="(0|false)"\s*\/>/.test(b);
     if (bold && text.length < 120 && !/[.:]$/.test(text)) current.lines.push(`## ${text}`);
     else if (/<w:numPr>/.test(b) || /^List/i.test(style)) current.lines.push(`• ${text}`);
     else current.lines.push(text);
@@ -123,11 +124,14 @@ export async function readStakeholderDoc(path: string): Promise<StakeholderSecti
   return sections.map(({ lines, ...s }) => ({ ...s, profile: toProfile(lines) }));
 }
 
-/** Loose name key for matching document headings to stakeholder names: case, "/", "en", punctuation ignored. */
+/** Filler words ignored when matching names ("Beheerders van landelijke transportnetten" = "Beheerders landelijke transportnetten"). */
+const FILLER = new Set(["en", "van"]);
+
+/** Loose name key for matching document headings to stakeholder names: case, "/", filler words, punctuation ignored. */
 export const nameKey = (s: string) =>
   s
     .toLowerCase()
     .replace(/[/,()–-]/g, " ")
     .split(/\s+/)
-    .filter((w) => w && w !== "en")
+    .filter((w) => w && !FILLER.has(w))
     .join(" ");
