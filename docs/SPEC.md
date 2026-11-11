@@ -55,6 +55,7 @@ Structure (changed 2026-11-10): **project → phase → activity → stakeholder
 
 ### Phase (belongs to project)
 - name, description, sort order (drag to reorder), comments, collapsible on the overview.
+- Optional **start and end date** (added 2026-11-11; end may not be before start). Not copied to other projects.
 - Phases are **not locked**: work may happen in any phase. When changing a status while an earlier
   phase is not complete, the UI shows a **warning** (no block).
 - A phase is complete when all its activities are `done` or `not_applicable`.
@@ -135,6 +136,8 @@ fails with a conflict message showing who changed it; the user re-applies their 
   (first incomplete phase), filter by project status, search by name.
 - Excel export per project: one row per stakeholder with its phase, activity (number, name, status,
   description, result) and role; activities without stakeholders get one row.
+  A second sheet **"Planning fases"** shows a Gantt chart of the phases (cell-drawn: one column per week,
+  per month when the planning spans more than three years; completed phases green; current week marked).
 
 ## 9. Out of scope (for now)
 

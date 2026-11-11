@@ -18,7 +18,7 @@ import { ActivityStatusSelect } from "@/components/ActivityStatusSelect";
 import { Comments, type CommentItem } from "@/components/Comments";
 import { ChevronRightIcon, GripIcon, PencilIcon, PlusIcon, TrashIcon } from "@/components/icons";
 import type { Activity, Phase } from "@/db/schema";
-import { COMMENT_LABELS, WARNING_LABEL } from "@/lib/labels";
+import { COMMENT_LABELS, formatDate, WARNING_LABEL } from "@/lib/labels";
 
 type ActivityRowData = Activity & {
   leadCount: number;
@@ -313,10 +313,11 @@ export function PhaseBoard({ projectId, phases, canWrite, isAdmin, currentUserId
       {canWrite && (
         <div className="card p-5">
           <h2 className="mb-3 text-lg font-bold text-brand-900">Fase toevoegen</h2>
-          <ActionForm action={createPhase} resetOnSuccess className="grid gap-3 sm:grid-cols-[1fr_2fr_auto]">
+          <ActionForm action={createPhase} resetOnSuccess className="grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_2fr_auto_auto_auto]">
             <input type="hidden" name="projectId" value={projectId} />
             <input name="name" required placeholder="Naam van de fase" aria-label="Naam van de fase" className="input" />
             <input name="description" placeholder="Omschrijving (optioneel)" aria-label="Omschrijving" className="input" />
+            <PhaseDateFields idPrefix="new-phase" />
             <button className="btn-primary">Toevoegen</button>
           </ActionForm>
         </div>
@@ -423,6 +424,26 @@ function ActivityRow({
   );
 }
 
+/** Start and end date inputs of a phase (both optional). */
+function PhaseDateFields({ idPrefix, startDate, endDate }: { idPrefix: string; startDate?: string | null; endDate?: string | null }) {
+  return (
+    <>
+      <div>
+        <label className="label" htmlFor={`${idPrefix}-start`}>
+          Startdatum
+        </label>
+        <input id={`${idPrefix}-start`} name="startDate" type="date" defaultValue={startDate ?? ""} className="input" />
+      </div>
+      <div>
+        <label className="label" htmlFor={`${idPrefix}-end`}>
+          Einddatum
+        </label>
+        <input id={`${idPrefix}-end`} name="endDate" type="date" defaultValue={endDate ?? ""} className="input" />
+      </div>
+    </>
+  );
+}
+
 function PhaseHeader({
   view,
   index,
@@ -447,11 +468,16 @@ function PhaseHeader({
   if (editing) {
     return (
       <div className="border-b border-slate-200 p-5">
-        <ActionForm action={updatePhase} onSuccess={() => setEditing(false)} className="grid gap-3 sm:grid-cols-[1fr_2fr_auto_auto]">
+        <ActionForm
+          action={updatePhase}
+          onSuccess={() => setEditing(false)}
+          className="grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_2fr_auto_auto_auto_auto]"
+        >
           <input type="hidden" name="id" value={phase.id} />
           <input type="hidden" name="version" value={phase.version} />
           <input name="name" required defaultValue={phase.name} aria-label="Naam" className="input" />
           <input name="description" defaultValue={phase.description} aria-label="Omschrijving" className="input" placeholder="Omschrijving" />
+          <PhaseDateFields idPrefix={`phase-${phase.id}`} startDate={phase.startDate} endDate={phase.endDate} />
           <button className="btn-primary">Opslaan</button>
           <button type="button" className="btn-secondary" onClick={() => setEditing(false)}>
             Annuleren
@@ -503,6 +529,11 @@ function PhaseHeader({
             </button>
             {view.total > 0 && view.isComplete && <span className="badge ml-2 bg-green-100 align-middle text-green-800">Afgerond</span>}
           </h2>
+          {(phase.startDate || phase.endDate) && (
+            <p className="text-sm text-slate-500">
+              {phase.startDate ? formatDate(phase.startDate) : "?"} – {phase.endDate ? formatDate(phase.endDate) : "?"}
+            </p>
+          )}
           {phase.description && !collapsed && <p className="text-sm text-slate-600">{phase.description}</p>}
           {collapsed && (
             <p className="text-sm text-slate-500">

@@ -48,10 +48,16 @@ async function deleteStakeholdersWhere(tx: Tx, ctx: WriteContext, where: ReturnT
 // Phases
 // ---------------------------------------------------------------------------
 
-const phaseFields = z.object({
-  name: requiredText("Naam", 200),
-  description: optionalText(),
-});
+const phaseFields = z
+  .object({
+    name: requiredText("Naam", 200),
+    description: optionalText(),
+    startDate: optionalDate,
+    endDate: optionalDate,
+  })
+  .refine((v) => !v.startDate || !v.endDate || v.endDate >= v.startDate, {
+    message: "De einddatum van de fase ligt vóór de startdatum.",
+  });
 
 export async function createPhase(fd: FormData) {
   return runAction(async () => {

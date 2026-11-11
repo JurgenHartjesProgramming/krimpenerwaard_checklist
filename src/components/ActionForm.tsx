@@ -62,11 +62,11 @@ export function ActionForm<T>({
         {children}
       </fieldset>
       {error && (
-        <p role="alert" className="mt-2 rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
+        <p role="alert" className="col-span-full mt-2 rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
           {error}
         </p>
       )}
-      {message && <p className="mt-2 text-sm text-green-700">{message}</p>}
+      {message && <p className="col-span-full mt-2 text-sm text-green-700">{message}</p>}
     </form>
   );
 }

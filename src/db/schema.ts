@@ -82,6 +82,9 @@ export const phases = pgTable(
     projectId: uuid("project_id").notNull().references(() => projects.id),
     name: text("name").notNull(),
     description: text("description").notNull().default(""),
+    /** Planned period of the phase (optional); drives the Gantt sheet in the Excel export. */
+    startDate: date("start_date", { mode: "string" }),
+    endDate: date("end_date", { mode: "string" }),
     sortOrder: integer("sort_order").notNull().default(0),
     version: integer("version").notNull().default(1),
     deletedAt: ts("deleted_at"),

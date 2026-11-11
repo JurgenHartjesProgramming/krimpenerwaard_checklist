@@ -3,7 +3,8 @@ import { and, asc, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { activities, phases, stakeholders } from "@/db/schema";
 import { NotFoundError } from "@/lib/history";
-import { ACTIVITY_STATUS_LABELS, ROLE_IN_ACTIVITY_LABELS, STAKEHOLDER_STATUS_LABELS } from "@/lib/labels";
+import { addPhaseGanttSheet } from "@/lib/gantt";
+import { ACTIVITY_STATUS_LABELS, isActivityComplete, ROLE_IN_ACTIVITY_LABELS, STAKEHOLDER_STATUS_LABELS } from "@/lib/labels";
 import { getProject } from "@/lib/queries";
 import { requireUser } from "@/lib/session";
 
@@ -97,6 +98,20 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     ws.getColumn(key).alignment = { wrapText: true, vertical: "top" };
   }
   ws.autoFilter = { from: "A1", to: "O1" };
+
+  addPhaseGanttSheet(
+    wb,
+    phaseRows.map((p) => {
+      const own = activityRows.filter((a) => a.phaseId === p.id);
+      return {
+        name: p.name,
+        startDate: p.startDate,
+        endDate: p.endDate,
+        total: own.length,
+        complete: own.filter((a) => isActivityComplete(a.status)).length,
+      };
+    }),
+  );
 
   const buffer = await wb.xlsx.writeBuffer();
   const safeName = project.name.replace(/[^\w\- ]+/g, "").trim() || "project";
